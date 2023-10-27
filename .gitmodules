@@ -1,0 +1,6 @@
+[submodule "TypeOneBackend"]
+	path = TypeOneBackend
+	url = https://github.com/timattt/TypeOneBackend
+[submodule "TypeOneFrontend"]
+	path = TypeOneFrontend
+	url = https://github.com/timattt/TypeOneFrontend

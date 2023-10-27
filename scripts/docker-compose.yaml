@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  typeOneDB:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
