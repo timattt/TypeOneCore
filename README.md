@@ -1,2 +1,17 @@
 # TypeOneCore
-Core scripts files for type-1
+
+Простенькая соц-сеть.
+
+## Deploy
+
+Подгружаем **сабмодули**:
+
+```
+git submodule update --init
+```
+
+В папке **scripts** вызываем:
+
+```
+docker compose up
+```
