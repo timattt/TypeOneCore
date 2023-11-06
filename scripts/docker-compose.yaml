@@ -1,13 +1,58 @@
-version: '3'
+version: '3.4'
+
+x-common-variables:
+  &db-env-vars
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_IP: ${POSTGRES_IP}
 
 services:
-  typeOneDB:
+  type-1-database:
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      <<: *db-env-vars
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
-    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
+      interval: 1s
+      timeout: 1s
+      retries: 100
+    networks:
+      - database_internal
+  type-1-backend:
+    build: ./../TypeOneBackend/.
+    environment:
+      <<: *db-env-vars
+      BACKEND_PORT: ${BACKEND_PORT}
+      BACKEND_IP: ${BACKEND_IP}
+    depends_on:
+      type-1-database:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    networks:
+      - database_internal
+      - default
+  type-1-frontend:
+    build: ./../TypeOneFrontend/.
+    environment:
+      REACT_APP_BACKEND_PORT: ${BACKEND_PORT}
+      REACT_APP_BACKEND_IP: ${BACKEND_IP}
+      FRONTEND_PORT: ${FRONTEND_PORT}
+    depends_on:
+      type-1-backend:
+        condition: service_started
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    networks:
+      - default
+
+networks:
+  default: {}
+  database_internal:
+    internal: true
+
