@@ -21,6 +21,7 @@ services:
       interval: 1s
       timeout: 1s
       retries: 100
+    user: postgres
     networks:
       - database_internal
   type-1-backend:
