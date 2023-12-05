@@ -14,8 +14,9 @@ services:
       <<: *db-env-vars
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    volumes:
-      - ./database/:/docker-entrypoint-initdb.d/
+# scripts are useless because jpa does it automatically
+#    volumes:
+#      - ./database/:/docker-entrypoint-initdb.d/
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
       interval: 1s
